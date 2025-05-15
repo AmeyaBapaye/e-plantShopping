@@ -2,13 +2,21 @@ import React, { useState, useEffect } from "react";
 import "./ProductList.css";
 import CartItem from "./CartItem";
 import { addItem, removeItem, updateQuantity } from "./CartSlice";
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 function ProductList({ onHomeClick }) {
   const [showCart, setShowCart] = useState(false);
   const [showPlants, setShowPlants] = useState(false); // State to control the visibility of the About Us page
-  const [addedToCart, setAddedToCart] = useState({});
   const dispatch = useDispatch();
+  const cartItems = useSelector((state) => state.cart.items);
+
+  // Calculate total quantity of all items
+  const totalQuantity = cartItems.reduce((total, item) => total + item.quantity, 0);
+
+  // Helper function to check if an item is in cart
+  const isInCart = (productName) => {
+    return cartItems.some(item => item.name === productName);
+  };
 
   const plantsArray = [
     {
@@ -295,10 +303,6 @@ function ProductList({ onHomeClick }) {
 
   const handleAddToCart = (product) => {
     dispatch(addItem(product));
-    setAddedToCart((prevState) => ({
-        ...prevState,
-        [product.name]: true,
-    }));
   }
   return (
     <div>
@@ -345,6 +349,17 @@ function ProductList({ onHomeClick }) {
                     stroke-width="2"
                     id="mainIconPathAttribute"
                   ></path>
+                  <text
+                    x="128"
+                    y="140"
+                    textAnchor="middle"
+                    fill="#faf9f9"
+                    fontSize="72"
+                    fontWeight="bold"
+                    dominantBaseline="middle"
+                  >
+                    {totalQuantity}
+                  </text>
                 </svg>
               </h1>
             </a>
@@ -382,9 +397,9 @@ function ProductList({ onHomeClick }) {
                         <button
                           className="product-button"
                           onClick={() => handleAddToCart(plant)}
-                          disabled={addedToCart[plant.name]}
+                          disabled={isInCart(plant.name)}
                         >
-                          {addedToCart[plant.name] ? "Added to Cart" : "Add to Cart"}
+                          {isInCart(plant.name) ? "Added to Cart" : "Add to Cart"}
                         </button>
                       </div>
                     )
