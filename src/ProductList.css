@@ -250,3 +250,11 @@ body {
         text-align: center; /* Align text to the center */
       }
   }
+
+.category-title {
+    text-align: center;
+    /* Optional: you could also add some spacing or styling */
+    margin: 20px 0;
+    font-size: 24px;
+    font-weight: bold;
+}
